@@ -1,0 +1,28 @@
+name: sensors/Vibrate
+plugin: attachment
+command: 
+ adb_test check-sensors-vibrate
+description: 
+ Sends a Vibrate command to usensord over the session bus.
+ If it works the device will vibrate once.
+ .
+ This test will fail if the expected haptics interface is not available
+ which means that the sysfs file it expected to find was not found.
+ .
+ The most likely fix is to set it up in the kernel config.
+estimated_duration: 1
+
+name: sensors/VibratePattern
+plugin: attachment
+command: 
+ adb_test check-sensors-vibratepattern
+description:
+ Sends a Vibrate command to usensord over the session bus.
+ If it works the device will vibrate a couple of times following an
+ on/off pattern.
+ .
+ This test will fail if the expected haptics interface is not available
+ which means that the sysfs file it expected to find was not found.
+ .
+ The most likely fix is to set it up in the kernel config.
+estimated_duration: 5

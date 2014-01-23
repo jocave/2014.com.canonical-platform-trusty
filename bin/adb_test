@@ -1,0 +1,28 @@
+#!/bin/sh
+
+test_path=$(which $1)
+
+if [ -z "$test_path" ]; then
+	echo Testbin not set
+	exit 1
+fi
+
+get_returncode() {
+	while read line; do
+		set +e;
+		RETVAL=$(echo $line | grep -Po '(?<=ADB_RC=)\d+');
+         if [ $? -eq 0 ] ; then
+             set -e;
+             return $RETVAL;
+         fi;
+         echo $line;
+         set -e;
+     done;
+}
+
+adb push "$test_path" /tmp > /dev/null 2>&1
+baserun="sudo -iu phablet bash -ic "
+adb shell "$baserun \"/tmp/$(basename $test_path)\"; echo ADB_RC=\$?" | \
+	get_returncode
+
+return $?

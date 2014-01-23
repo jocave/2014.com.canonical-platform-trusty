@@ -1,0 +1,11 @@
+name: camera/info
+plugin: attachment
+command: adb_test check-camera
+description: 
+ Displays information from camera device. It will list the capabilities of
+ the front and back cameras if found. If no information is printed for
+ either the back or front camera and the device is supposed to have one
+ you will need to go back to the drawing board.
+ .
+ This test only fails if the camera service is not running.
+estimated_duration: 0.01

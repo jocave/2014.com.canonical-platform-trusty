@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if [ -n "$(/sbin/initctl status unity8 | grep 'start/running')" ]; then
+	stop unity8
+	trap 'start unity8' EXIT
+fi
+
+mir_acceptance_tests
