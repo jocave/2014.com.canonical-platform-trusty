@@ -1,0 +1,114 @@
+#! /usr/bin/python2.7
+# -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
+# Copyright (C) 2013 Canonical Ltd.
+# Author: Sergio Schvezov <sergio.schvezov@canonical.com>
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; version 3 of the License.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+from __future__ import print_function
+
+from launchpadlib.launchpad import Launchpad
+from subprocess import check_call
+from os import path
+
+import atexit
+import os
+import shutil
+import tempfile
+import urllib2
+
+
+class LP(object):
+
+    @property
+    def arch_series(self):
+        return self._arch_series
+
+    @property
+    def archive(self):
+        return self._archive
+
+    @property
+    def series(self):
+        return self._series
+
+    def __init__(self, release, arch):
+        self.lp = Launchpad.login_anonymously('platform-tests',
+                                              'production',
+                                              '~/.launchpadlib/cache',
+                                              version="devel")
+        distro = self.lp.distributions['ubuntu']
+        self._series = distro.getSeries(name_or_version=release)
+        self._arch_series = self._series.getDistroArchSeries(archtag=arch)
+        self._archive = self.lp.distributions['ubuntu'].main_archive
+
+
+lp = None
+
+packages = (
+    'libhybris-test',
+    'libunity-mir-tests',
+    'mir-test-tools',
+)
+
+
+def cleanup(directory):
+    if os.path.exists(directory) and os.path.isdir(directory):
+        print('Removing directory %s' % directory)
+        shutil.rmtree(directory)
+
+
+def get_binary_package(package, target_dir):
+    tmp_dir = tempfile.mkdtemp()
+    atexit.register(cleanup, tmp_dir)
+    print('Fetching %s - into %s' % (package, tmp_dir))
+    bpph = lp.archive.getPublishedBinaries(
+        binary_name=package,
+        distro_arch_series=lp.arch_series,
+        status="Published", pocket='Release',
+        exact_match=True)
+    version = bpph[0].binary_package_version
+    bin_url = bpph[0].binaryFileUrls()[0]
+    print('Downloading %s version %s' % (package, version))
+    url = urllib2.urlopen(bin_url)
+    data = url.read()
+    package_name = "%s_%s_%s.deb" % (package, version, 'armhf')
+    target = path.join(tmp_dir, package_name)
+    with open(target, "wb") as package:
+        package.write(data)
+    extract_dir = path.join(tmp_dir, 'deb')
+    check_call(['dpkg-deb', '-x', target, extract_dir])
+    copy_bin(os.path.join(extract_dir, 'usr/bin'))
+
+
+def copy_bin(bindir):
+    if not os.path.exists(bindir):
+        return
+    for f in os.listdir(bindir):
+        shutil.move(os.path.join(bindir, f), os.path.join('data', f))
+
+
+def main():
+    if not os.path.exists(os.path.join(os.path.curdir, 'manage.py')):
+        print('Please run script from test root')
+        exit(1)
+    global lp
+    test_dir = tempfile.mkdtemp()
+    atexit.register(cleanup, test_dir)
+    lp = LP('trusty', 'armhf')
+    for package in packages:
+        get_binary_package(package, test_dir)
+
+
+if __name__ == '__main__':
+    main()

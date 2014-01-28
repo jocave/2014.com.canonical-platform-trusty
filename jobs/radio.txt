@@ -1,0 +1,19 @@
+name: radio/ofonodevice
+plugin: attachment
+command: adb_test check-radio
+description: 
+ Verifies that ofono is running and that the modem is powered;
+ .
+ Additional info is displayed to verify connection to the network, which should
+ be online if a proper sim is inserted.
+estimated_duration: 1
+
+name: radio/networkmanagerdevice
+plugin: attachment
+command: adb_test check-radio-devices
+description: 
+ Verifies that at least an ofono radio device is available
+ .
+ Additional radio devices are listed for manual verification depending on the 
+ connected hardware.
+estimated_duration: 1
