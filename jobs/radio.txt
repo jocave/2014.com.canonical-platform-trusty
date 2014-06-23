@@ -1,4 +1,4 @@
-name: radio/ofonodevice
+id: radio/ofonodevice
 plugin: attachment
 command: adb_test check-radio
 description: 
@@ -8,7 +8,7 @@ description:
  be online if a proper sim is inserted.
 estimated_duration: 1
 
-name: radio/networkmanagerdevice
+id: radio/networkmanagerdevice
 plugin: attachment
 command: adb_test check-radio-devices
 description: 

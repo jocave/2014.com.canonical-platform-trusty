@@ -1,4 +1,5 @@
 # Select all the jobs that test some category
+miscellanea/submission-resources
 graphics/.*
 camera/.*
 sensors/.*

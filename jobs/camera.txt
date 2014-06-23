@@ -1,4 +1,4 @@
-name: camera/info
+id: camera/info
 plugin: attachment
 command: adb_test check-camera
 description: 

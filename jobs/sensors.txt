@@ -1,4 +1,4 @@
-name: sensors/Vibrate
+id: sensors/Vibrate
 plugin: attachment
 command: 
  adb_test check-sensors-vibrate
@@ -12,7 +12,7 @@ description:
  The most likely fix is to set it up in the kernel config.
 estimated_duration: 1
 
-name: sensors/VibratePattern
+id: sensors/VibratePattern
 plugin: attachment
 command: 
  adb_test check-sensors-vibratepattern

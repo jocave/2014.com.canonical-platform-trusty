@@ -1,11 +1,11 @@
-name: graphics/egl-info
+id: graphics/egl-info
 plugin: attachment
 command: adb_test check-egl-info
 description: 
  Displays egl info from device, verifying that the egl drivers can be loaded.
 estimated_duration: 1
 
-name: graphics/egl-compile
+id: graphics/egl-compile
 plugin: attachment
 command: adb_test check-egl-compile
 description: 
@@ -16,7 +16,7 @@ description:
  TODO: this test can be flaky
 estimated_duration: 2
 
-name: graphics/egl-configs
+id: graphics/egl-configs
 plugin: attachment
 command: adb_test test_egl_configs
 description:
@@ -25,9 +25,9 @@ description:
  that mir would expect to run.
 estimated_duration: 1
 
-name: graphics/mir-acceptance
+id: graphics/mir-acceptance
 plugin: attachment
-command: adb_test mir_acceptance
+command: adb_test mir_acceptance | /usr/lib/2013.com.canonical.certification:checkbox/bin/ansi_parser
 description: 
  Runs the mir acceptance tests to verify that the platform will work with
  mir.
