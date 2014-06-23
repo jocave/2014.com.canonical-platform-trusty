@@ -18,7 +18,7 @@ estimated_duration: 2
 
 id: graphics/egl-configs
 plugin: attachment
-command: adb_test test_egl_configs
+command: adb_no_push test_egl_configs
 description:
  This test in itself should only fail if the other egl tests fail.
  It is more of use to verify and debug if there's a missing config
